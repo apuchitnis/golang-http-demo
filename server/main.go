@@ -1,3 +1,5 @@
+// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
+
 package main
 
 import (
@@ -8,38 +10,37 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 )
 
 var (
-	usernames = "leo,nev,sam"
+	brexitDate = "29th March"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	//log.Println(fmt.Sprintf("server handling request: %v", r))
+func brexitDateHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Sprintln("server handling request: %v", r.Method)
 	switch r.Method {
 	case http.MethodGet:
-		fmt.Println("GET request")
-		w.Write([]byte(fmt.Sprintf("usernames are: %v\n", usernames)))
+		w.Write([]byte(brexitDate))
 	case http.MethodPut:
-		fmt.Println("PUT request")
 		body, err := ioutil.ReadAll(r.Body)
 		if err != nil {
-			w.WriteHeader(500)
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		usernames = string(body)
+		brexitDate = string(body)
 	default:
-		w.WriteHeader(501)
+		w.WriteHeader(http.StatusNotImplemented)
 	}
 }
 
 func main() {
-	// Complex golang server example
-	// http.HandleFunc("/username", handler)
-	// log.Fatal(http.ListenAndServe(":1234", nil))
+	// net/http golang server example
+	//http.HandleFunc("/brexitDate", brexitDateHandler)
+	//log.Fatal(http.ListenAndServe("localhost:1234", nil))
 
-	ln, err := net.Listen("tcp", ":1234")
+	ln, err := net.Listen("tcp", "localhost:1234")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -51,11 +52,39 @@ func main() {
 		}
 		go func() {
 			defer conn.Close()
-			err := handleConnection(conn)
+			err := netcatish(conn)
+			//err := handleConnection(conn)
 			if err != nil {
 				log.Println(err)
 			}
 		}()
+	}
+}
+
+func netcatish(conn net.Conn) error {
+	for {
+		//simple line by line scanner
+
+		//first read from conn
+		connReader := bufio.NewReader(conn)
+		text, err := connReader.ReadString(byte('\n'))
+		if err != nil {
+			return err
+		}
+		fmt.Print("server received: " + text)
+
+		//second write to conn
+		inputReader := bufio.NewReader(os.Stdin)
+		text, err = inputReader.ReadString('\n')
+		if err != nil {
+			return err
+		}
+
+		fmt.Print("server sending: " + text)
+		_, err = conn.Write([]byte(text))
+		if err != nil {
+			return err
+		}
 	}
 }
 
@@ -81,40 +110,26 @@ func handleConnection(conn net.Conn) error {
 	if !success {
 		return scanner.Err()
 	}
-	// simple line by line scanner
-	//		connReader := bufio.NewReader(conn)
-	//		connText, _ := connReader.ReadString(byte('\r\n'))
-	//		log.Println("received: " + connText)
-	//fmt.Println("http request:")
-	//fmt.Println(scanner.Text())
-	//inputReader := bufio.NewReader(os.Stdin)
-	//text, _ := inputReader.ReadString('\n')
 
-	//rd := bufio.NewReader(strings.NewReader(scanner.Text()))
-	//request, err := http.ReadRequest(rd)
-	//if err != nil {
-	//log.Fatal(err)
-	//}
-	//fmt.Println(request.Method)
-
-	getRequest := "GET /username HTTP/1.1"
-	putRequest := "PUT /username HTTP/1.1"
+	request := scanner.Text()
+	getRequest := "GET /brexitDate HTTP/1.1"
+	putRequest := "PUT /brexitDate HTTP/1.1"
 	switch {
-	case strings.HasPrefix(scanner.Text(), getRequest):
+	case strings.HasPrefix(request, getRequest):
 		fmt.Println("GET request")
 		lineAndHeaders := fmt.Sprintf(`HTTP/1.1 200 OK
-Content-Type: text/plain
-Content-Length: %v`, len(usernames)+15)
-		body := "usernames are " + usernames + "\n"
+		Content-Type: text/plain
+		Content-Length: %v`, len(brexitDate))
+		body := brexitDate + "\n"
 		response := lineAndHeaders + crlf + body
 		_, err := conn.Write([]byte(response))
 		if err != nil {
 			return err
 		}
-	case strings.HasPrefix(scanner.Text(), putRequest):
+	case strings.HasPrefix(request, putRequest):
 		fmt.Println("PUT request")
-		body := strings.Split(scanner.Text(), crlf)[1]
-		usernames = body
+		body := strings.Split(request, crlf)[1]
+		brexitDate = body
 		response := "HTTP/1.1 200 OK" + crlf
 		_, err := conn.Write([]byte(response))
 		if err != nil {
