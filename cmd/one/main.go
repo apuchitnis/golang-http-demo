@@ -14,9 +14,9 @@ func httpRequest() {
 	body, _ := ioutil.ReadAll(resp.Body)
 	println("brexit date is: " + string(body))
 
-	request, _ := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("29rd April"))
+	request, _ := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("31st October"))
 	resp, _ = http.DefaultClient.Do(request)
-	println("put succeeded")
+	println("PUT succeeded")
 }
 
 func main() {

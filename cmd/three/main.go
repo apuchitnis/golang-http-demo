@@ -33,7 +33,7 @@ Accept: */*`
 	lineAndHeaders = `PUT /brexitDate HTTP/1.1
 Host: localhost:1234
 Accept: */*`
-	body = "neverrr!!!"
+	body = "NEVERRR!!! 🙅"
 	request = lineAndHeaders + crlf + body
 	_, _ = conn.Write([]byte(request))
 
