@@ -3,7 +3,6 @@
 package one
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,7 +19,7 @@ func httpRequest() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("brexit date is: " + string(body))
+	println("brexit date is: " + string(body))
 
 	request, err := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("29rd April"))
 	if err != nil {
@@ -30,7 +29,7 @@ func httpRequest() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("put succeeded")
+	println("put succeeded")
 	return nil
 }
 

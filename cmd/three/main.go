@@ -3,7 +3,6 @@
 package three
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -32,7 +31,7 @@ Accept: */*`
 	}
 
 	body := strings.Split(string(response), crlf)[1]
-	fmt.Print("brexit date is: " + body)
+	println("brexit date is: " + body)
 	conn.Close()
 
 	conn, err = net.Dial("tcp", "localhost:1234")
@@ -54,7 +53,7 @@ Accept: */*`
 	if err != nil {
 		return err
 	}
-	fmt.Print("PUT succeeded")
+	println("PUT succeeded")
 	conn.Close()
 	return nil
 }

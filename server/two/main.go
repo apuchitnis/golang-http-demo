@@ -4,7 +4,6 @@ package two
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"net"
 	"os"
@@ -20,7 +19,7 @@ func netcatish(conn net.Conn) error {
 		if err != nil {
 			return err
 		}
-		fmt.Print("server received: " + text)
+		println("server received: " + text)
 
 		//second write to conn
 		inputReader := bufio.NewReader(os.Stdin)
@@ -29,7 +28,7 @@ func netcatish(conn net.Conn) error {
 			return err
 		}
 
-		fmt.Print("server sending: " + text)
+		println("server sending: " + text)
 		_, err = conn.Write([]byte(text))
 		if err != nil {
 			return err

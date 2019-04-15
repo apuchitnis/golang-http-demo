@@ -3,7 +3,6 @@
 package one
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,7 +13,7 @@ var (
 )
 
 func brexitDateHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("server handling request: ", r.Method)
+	println("server handling request: ", r.Method)
 	switch r.Method {
 	case http.MethodGet:
 		w.Write([]byte(brexitDate))

@@ -41,7 +41,7 @@ func handleConnection(conn net.Conn) error {
 	putRequest := "PUT /brexitDate HTTP/1.1"
 	switch {
 	case strings.HasPrefix(request, getRequest):
-		fmt.Println("GET request")
+		println("GET request")
 		lineAndHeaders := fmt.Sprintf(`HTTP/1.1 200 OK
 		Content-Type: text/plain
 		Content-Length: %v`, len(brexitDate))
@@ -52,7 +52,7 @@ func handleConnection(conn net.Conn) error {
 			return err
 		}
 	case strings.HasPrefix(request, putRequest):
-		fmt.Println("PUT request")
+		println("PUT request")
 		body := strings.Split(request, crlf)[1]
 		brexitDate = body
 		response := "HTTP/1.1 200 OK" + crlf
