@@ -4,44 +4,27 @@ package main
 
 import (
 	"bufio"
-	"log"
 	"net"
 	"os"
 )
 
-func netcatish() error {
-	conn, err := net.Dial("tcp", "localhost:1234")
-	if err != nil {
-		return err
-	}
+func netcatish() {
+	conn, _ := net.Dial("tcp", "localhost:1234")
 
 	for {
 		// first write to conn
 		inputReader := bufio.NewReader(os.Stdin)
-		text, err := inputReader.ReadString('\n')
-		if err != nil {
-			return err
-		}
-
+		text, _ := inputReader.ReadString('\n')
 		println("client sending: " + text)
-		_, err = conn.Write([]byte(text))
-		if err != nil {
-			return err
-		}
+		_, _ = conn.Write([]byte(text))
 
 		// second read from conn
 		connReader := bufio.NewReader(conn)
-		connText, err := connReader.ReadString(byte('\n'))
-		if err != nil {
-			return err
-		}
-
+		connText, _ := connReader.ReadString(byte('\n'))
 		println("client received: " + connText)
 	}
 }
 
 func main() {
-	if err := netcatish(); err != nil {
-		log.Fatal(err)
-	}
+	netcatish()
 }

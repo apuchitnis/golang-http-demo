@@ -4,62 +4,44 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"net"
 	"strings"
 )
 
-func rawRequest() error {
-	conn, err := net.Dial("tcp", "localhost:1234")
-	if err != nil {
-		return err
-	}
+const (
+	crlf = "\r\n\r\n"
+)
+
+func rawRequest() {
+	conn, _ := net.Dial("tcp", "localhost:1234")
 
 	lineAndHeaders := `GET /brexitDate HTTP/1.1
 Host: localhost:1234
 Accept: */*`
-	crlf := "\r\n\r\n"
-	request := lineAndHeaders + crlf
-	_, err = conn.Write([]byte(request))
-	if err != nil {
-		return err
-	}
 
-	response, err := ioutil.ReadAll(conn)
-	if err != nil {
-		return err
-	}
+	request := lineAndHeaders + crlf
+	_, _ = conn.Write([]byte(request))
+
+	response, _ := ioutil.ReadAll(conn)
 
 	body := strings.Split(string(response), crlf)[1]
 	println("brexit date is: " + body)
 	conn.Close()
 
-	conn, err = net.Dial("tcp", "localhost:1234")
-	if err != nil {
-		return err
-	}
+	conn, _ = net.Dial("tcp", "localhost:1234")
 
 	lineAndHeaders = `PUT /brexitDate HTTP/1.1
 Host: localhost:1234
 Accept: */*`
 	body = "neverrr!!!"
 	request = lineAndHeaders + crlf + body
-	_, err = conn.Write([]byte(request))
-	if err != nil {
-		return err
-	}
+	_, _ = conn.Write([]byte(request))
 
-	response, err = ioutil.ReadAll(conn)
-	if err != nil {
-		return err
-	}
+	response, _ = ioutil.ReadAll(conn)
 	println("PUT succeeded")
 	conn.Close()
-	return nil
 }
 
 func main() {
-	if err := rawRequest(); err != nil {
-		log.Fatal(err)
-	}
+	rawRequest()
 }

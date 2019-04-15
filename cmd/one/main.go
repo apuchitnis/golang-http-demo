@@ -4,37 +4,21 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
 
-func httpRequest() error {
-	resp, err := http.Get("http://localhost:1234/brexitDate")
-	if err != nil {
-		return err
-	}
+func httpRequest() {
+	resp, _ := http.Get("http://localhost:1234/brexitDate")
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+	body, _ := ioutil.ReadAll(resp.Body)
 	println("brexit date is: " + string(body))
 
-	request, err := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("29rd April"))
-	if err != nil {
-		return err
-	}
-	resp, err = http.DefaultClient.Do(request)
-	if err != nil {
-		return err
-	}
+	request, _ := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("29rd April"))
+	resp, _ = http.DefaultClient.Do(request)
 	println("put succeeded")
-	return nil
 }
 
 func main() {
-	if err := httpRequest(); err != nil {
-		log.Fatal(err)
-	}
+	httpRequest()
 }

@@ -4,12 +4,12 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"log"
 	"net"
 	"strings"
 
-	"github.com/pkg/errors"
 )
 
 var (
@@ -20,7 +20,7 @@ const (
 	crlf = "\r\n\r\n"
 )
 
-func handleConnection(conn net.Conn) error {
+func handleConnection(conn net.Conn) {
 	requestMethod, URL, body := getRequestParameters(conn)
 
 	println("server handling request: ", requestMethod+" "+URL)
@@ -32,25 +32,15 @@ func handleConnection(conn net.Conn) error {
 			Content-Length: %v`, len(brexitDate))
 		body := brexitDate + "\n"
 		response := lineAndHeaders + crlf + body
-		_, err := conn.Write([]byte(response))
-		if err != nil {
-			return err
-		}
+		_, _ = conn.Write([]byte(response))
 	case "PUT":
 		brexitDate = body
 		response := "HTTP/1.1 200 OK" + crlf
-		_, err := conn.Write([]byte(response))
-		if err != nil {
-			return err
-		}
+		_, _ = conn.Write([]byte(response))
 	default:
-		_, err := conn.Write([]byte("HTTP/1.1 501 Unimplemented\n"))
-		if err != nil {
-			return err
-		}
+		_, _ = conn.Write([]byte("HTTP/1.1 501 Unimplemented\n"))
 	}
 	conn.Close()
-	return nil
 }
 
 func getRequestParameters(conn net.Conn) (method string, URL string, body string) {
@@ -68,9 +58,6 @@ func getRequestParameters(conn net.Conn) (method string, URL string, body string
 			return 0, nil, nil
 		})
 	_ = scanner.Scan()
-	//if !success {
-	//	return scanner.Err()
-	//}
 	request := scanner.Text()
 	statusLine := strings.Split(request, "\n")[0]
 	method = strings.Split(statusLine, " ")[0]
@@ -80,19 +67,11 @@ func getRequestParameters(conn net.Conn) (method string, URL string, body string
 }
 
 func main() {
-	ln, err := net.Listen("tcp", "localhost:1234")
-	if err != nil {
-		log.Fatal(err)
-	}
+	ln, _ := net.Listen("tcp", "localhost:1234")
 
 	for {
-		conn, err := ln.Accept()
-		if err != nil {
-			log.Println("err")
-		}
+		conn, _ := ln.Accept()
 		defer conn.Close()
-		if err = handleConnection(conn); err != nil {
-			log.Println(err)
-		}
+		handleConnection(conn)
 	}
 }
