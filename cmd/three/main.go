@@ -1,6 +1,6 @@
 // Copyright (c) Improbable Worlds Ltd, All Rights Reserved
 
-package three
+package main
 
 import (
 	"io/ioutil"

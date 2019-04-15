@@ -1,6 +1,6 @@
 // Copyright (c) Improbable Worlds Ltd, All Rights Reserved
 
-package one
+package main
 
 import (
 	"io/ioutil"
@@ -13,7 +13,7 @@ var (
 )
 
 func brexitDateHandler(w http.ResponseWriter, r *http.Request) {
-	println("server handling request: ", r.Method)
+	println("server handling request: " + r.Method + " " + r.URL.String())
 	switch r.Method {
 	case http.MethodGet:
 		w.Write([]byte(brexitDate))
