@@ -20,7 +20,7 @@ func netcatish(conn net.Conn) {
 		text, _ = inputReader.ReadString('\n')
 
 		println("server sending: " + text)
-		_, _ = conn.Write([]byte(text))
+		conn.Write([]byte(text))
 	}
 }
 

@@ -32,13 +32,13 @@ func handleConnection(conn net.Conn) {
 			Content-Length: %v`, len(brexitDate))
 		body := brexitDate + "\n"
 		response := lineAndHeaders + crlf + body
-		_, _ = conn.Write([]byte(response))
+		conn.Write([]byte(response))
 	case "PUT":
 		brexitDate = body
 		response := "HTTP/1.1 200 OK" + crlf
-		_, _ = conn.Write([]byte(response))
+		conn.Write([]byte(response))
 	default:
-		_, _ = conn.Write([]byte("HTTP/1.1 501 Unimplemented\n"))
+		conn.Write([]byte("HTTP/1.1 501 Unimplemented\n"))
 	}
 	conn.Close()
 }
@@ -57,7 +57,7 @@ func getRequestParameters(conn net.Conn) (method string, URL string, body string
 			}
 			return 0, nil, nil
 		})
-	_ = scanner.Scan()
+	scanner.Scan()
 	request := scanner.Text()
 	statusLine := strings.Split(request, "\n")[0]
 	method = strings.Split(statusLine, " ")[0]

@@ -16,7 +16,7 @@ func netcatish() {
 		inputReader := bufio.NewReader(os.Stdin)
 		text, _ := inputReader.ReadString('\n')
 		println("client sending: " + text)
-		_, _ = conn.Write([]byte(text))
+		conn.Write([]byte(text))
 
 		// second read from conn
 		connReader := bufio.NewReader(conn)

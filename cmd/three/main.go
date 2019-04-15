@@ -20,7 +20,7 @@ Host: localhost:1234
 Accept: */*`
 
 	request := lineAndHeaders + crlf
-	_, _ = conn.Write([]byte(request))
+	conn.Write([]byte(request))
 
 	response, _ := ioutil.ReadAll(conn)
 
@@ -35,7 +35,7 @@ Host: localhost:1234
 Accept: */*`
 	body = "NEVERRR!!! 🙅"
 	request = lineAndHeaders + crlf + body
-	_, _ = conn.Write([]byte(request))
+	conn.Write([]byte(request))
 
 	response, _ = ioutil.ReadAll(conn)
 	println("PUT succeeded")
