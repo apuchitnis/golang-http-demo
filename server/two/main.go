@@ -1,5 +1,3 @@
-// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
-
 package main
 
 import (
@@ -10,16 +8,13 @@ import (
 
 func netcatish(conn net.Conn) {
 	for {
-		//first read from conn
-		connReader := bufio.NewReader(conn)
-		text, _ := connReader.ReadString(byte('\n'))
-		println("server received: " + text)
+		// First, read from conn and write to STDOUT.
+		text, _ := bufio.NewReader(conn).ReadString(byte('\n'))
+		println("server received:", text)
 
-		//second write to conn
-		inputReader := bufio.NewReader(os.Stdin)
-		text, _ = inputReader.ReadString('\n')
-
-		println("server sending: " + text)
+		// Second, read from STDIN and write to conn.
+		text, _ = bufio.NewReader(os.Stdin).ReadString('\n')
+		println("server sending:", text)
 		conn.Write([]byte(text))
 	}
 }

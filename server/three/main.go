@@ -1,5 +1,3 @@
-// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
-
 package main
 
 import (
@@ -9,29 +7,23 @@ import (
 	"log"
 	"net"
 	"strings"
-
 )
 
-var (
-	brexitDate = "29th March"
-)
+var brexitDate = "29th March"
 
-const (
-	crlf = "\r\n\r\n"
-)
+const crlf = "\r\n\r\n"
 
 func handleConnection(conn net.Conn) {
-	requestMethod, URL, body := getRequestParameters(conn)
+	method, URL, body := getRequestParameters(conn)
+	println("server handling request:", method, URL)
 
-	println("server handling request: ", requestMethod+" "+URL)
-
-	switch requestMethod {
+	switch method {
 	case "GET":
-		lineAndHeaders := fmt.Sprintf(`HTTP/1.1 200 OK
+		statusLineAndHeaders := fmt.Sprintf(`HTTP/1.1 200 OK
 			Content-Type: text/plain
 			Content-Length: %v`, len(brexitDate))
 		body := brexitDate + "\n"
-		response := lineAndHeaders + crlf + body
+		response := statusLineAndHeaders + crlf + body
 		conn.Write([]byte(response))
 	case "PUT":
 		brexitDate = body

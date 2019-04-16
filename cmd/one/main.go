@@ -1,5 +1,3 @@
-// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
-
 package main
 
 import (
@@ -8,17 +6,19 @@ import (
 	"strings"
 )
 
-func httpRequest() {
-	resp, _ := http.Get("http://localhost:1234/brexitDate")
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	println("brexit date is: " + string(body))
+func performHttpRequests() {
+	// Get and print the Brexit date.
+	response, _ := http.Get("http://localhost:1234/brexitDate")
+	defer response.Body.Close()
+	body, _ := ioutil.ReadAll(response.Body)
+	println("brexit date is:", string(body))
 
+	// Update the Brexit date.
 	request, _ := http.NewRequest(http.MethodPut, "http://localhost:1234/brexitDate", strings.NewReader("31st October"))
-	resp, _ = http.DefaultClient.Do(request)
+	_, _ = http.DefaultClient.Do(request)
 	println("PUT succeeded")
 }
 
 func main() {
-	httpRequest()
+	performHttpRequests()
 }

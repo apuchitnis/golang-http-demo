@@ -1,5 +1,3 @@
-// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
-
 package main
 
 import (
@@ -8,21 +6,15 @@ import (
 	"net/http"
 )
 
-var (
-	brexitDate = "29th March"
-)
+var brexitDate = "29th March"
 
 func brexitDateHandler(w http.ResponseWriter, r *http.Request) {
-	println("server handling request: " + r.Method + " " + r.URL.String())
+	println("server handling request:", r.Method, r.URL.String())
 	switch r.Method {
 	case http.MethodGet:
 		w.Write([]byte(brexitDate))
 	case http.MethodPut:
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+		body, _ := ioutil.ReadAll(r.Body)
 		brexitDate = string(body)
 	default:
 		w.WriteHeader(http.StatusNotImplemented)
