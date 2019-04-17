@@ -6,8 +6,7 @@ import (
 	"os"
 )
 
-func netcatish() {
-	conn, _ := net.Dial("tcp", "localhost:1234")
+func netcatish(conn net.Conn) {
 
 	for {
 		// First, read from STDIN and write to conn.
@@ -22,5 +21,6 @@ func netcatish() {
 }
 
 func main() {
-	netcatish()
+	conn, _ := net.Dial("tcp", "localhost:1234")
+	netcatish(conn)
 }
